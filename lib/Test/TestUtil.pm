@@ -11,8 +11,8 @@ use warnings::register;
 
 
 use vars qw($VERSION $DATE);
-$VERSION = '1.04';
-$DATE = '2003/06/12';
+$VERSION = '1.05';
+$DATE = '2003/06/13';
 
 use SelfLoader;
 use File::Spec;
@@ -74,19 +74,6 @@ sub fspec2fspec
 
 }
 
-######
-#
-#
-sub pm2file
-{
-   my (undef, $pm) = @_;
-   my $require = Test::TestUtil->pm2require( $pm );
-   my ($file,$path) = Test::TestUtil->find_in_path($^O, $require);
-   ($file,$path)
-}
-
-__DATA__
-
 
 ######
 #
@@ -106,22 +93,31 @@ sub pm2datah
     my ($file) = Test::TestUtil->pm2file( $pm );
 
     unless( $file ) {
-        warn "Cannot find file for $pm\n";
+        warn "# Cannot find file for $pm\n";
         return undef;
     }
 
     local($/);
-    $/ = "\n__DATA__\n";
+    $/ = "__DATA__";
     my $fh;
     unless( open $fh, "< $file" ) {
-        warn "Cannot open $file\n";
+        warn "# Cannot open $file\n";
         return undef;
     }    
-    my $data =  <$fh>;
+
+    ######
+    # Move to the __DATA__ token
+    #
+    my $data = 'Start Search';
+
+    while($data && $data !~ /[\012\015]__DATA__$/ ) {
+        $data =  <$fh>;
+    }
 
     $fh
 }
 
+__DATA__
 
 
 ######
@@ -132,22 +128,71 @@ sub format_hash_table
 
     my (undef, $h_p, $width_p, $header_p) = @_;
 
-    my @array_table = ();
-
-    my (@keys, $key, $entries_p, @entries, $entry);
     unless (ref($h_p) eq 'HASH') {
-        warn "Table to format must be an hash table\n";
+        warn "# Table to format must be an hash table\n";
         return undef;
     }
-
+    
+    my @array_table = ();
+    my (@key_stack, @keys, $key, $entries_p, @entries, $entry);
     @keys = sort keys %$h_p;
-    foreach $key (@keys) {
-       $entries_p = $h_p->{$key};
-       push @array_table, [$key, @$entries_p];
-    }
+    while( @keys ) {
 
-    Test::TestUtil->format_array_table( \@array_table, $width_p, $header_p );
+       #######
+       # Using the @array_column pre-fix from the previous interrupted
+       # hash column
+       # 
+       # Since pushing pointers, instead of values, need to begin a
+       # a brand new @array_column
+       #
+       my @array_column = (@key_stack) ? @{$key_stack[-1]} : ();
+       $key = shift @keys; 
+       push @array_column, $key;
+       $entries_p = $h_p->{$key};
+       if (ref($entries_p) eq 'ARRAY' ) {
+           push @array_column,@$entries_p;
+           push @array_table, \@array_column;
+           next;
+       }
+
+       #######
+       # Have a hash column. Remember where at for the
+       # current column and sort the keys for the next
+       # column.
+       #
+       if (ref($entries_p) eq 'HASH' ) {
+           my @keep_keys = @keys;
+           push @key_stack, (\@keep_keys, $h_p, \@array_column);
+           $h_p = $entries_p;
+           @keys = sort keys %$h_p;
+           next;
+       }
+
+       push @array_table, \@array_column;
+       unless(@keys) {
+           pop @key_stack;
+           $h_p =  pop @key_stack;
+           @keys = @{pop @key_stack};
+       }
+
+   }
+
+   Test::TestUtil->format_array_table( \@array_table, $width_p, $header_p );
 }
+
+
+######
+#
+#
+sub pm2file
+{
+   my (undef, $pm) = @_;
+   my $require = Test::TestUtil->pm2require( $pm );
+   my ($file,$path) = Test::TestUtil->find_in_path($^O, $require);
+   ($file,$path)
+}
+
+
 
 
 
@@ -160,7 +205,7 @@ sub format_array_table
     my (undef, $a_p, $width_p, $header_p) = @_;
 
     unless (ref($a_p) eq 'ARRAY') {
-        warn "Table to format must be an array table\n";
+        warn "# Table to format must be an array table\n";
         return undef;
     }
     
@@ -168,7 +213,7 @@ sub format_array_table
     # Format the inventory list
     #
     unless (ref($width_p) eq 'ARRAY') {
-        warn "Width  must be an array\n";
+        warn "# Width  must be an array\n";
         return undef;
     }
     my @w = @$width_p;
@@ -187,7 +232,7 @@ sub format_array_table
     foreach $r_p (@$a_p) {
         
         unless (ref($r_p) eq 'ARRAY') {
-            warn "Rows in table to format must be an arrays\n";
+            warn "# Rows in table to format must be an arrays\n";
             return undef;
         }
 
@@ -359,23 +404,23 @@ sub load_package
 {
     my (undef, $package) = @_;
     unless ($package) { # have problem if there is no package
-        my $error = "The package name is empty. There is no package to load.\n";
+        my $error = "# The package name is empty. There is no package to load.\n";
         warn( $error );
         return $error;
     }
     if( $package =~ /\-/ ) {
-        my $error =  "The - in $package causes problem. Perl thinks - is subtraction when it evals it.\n";
+        my $error =  "# The - in $package causes problem. Perl thinks - is subtraction when it evals it.\n";
         warn( $error );
         return $error;      
     }
     return '' if Test::TestUtil->is_package_loaded( $package );
     eval "require $package";
     if($@) {
-        warn( "Cannot load $package.\n\t$@\n");
+        warn( "# Cannot load $package.\n\t$@\n");
         return( $@ );
     }
     unless (Test::TestUtil->is_package_loaded( $package )) {
-        my $error = "$package loaded but package vocabulary absent.\n";
+        my $error = "# $package loaded but package vocabulary absent.\n";
         warn( $error );
         return $error;
     }
@@ -437,13 +482,13 @@ sub fin
    # translations
    #
    unless(open IN, "<$file") {
-       warn("Cannot open <$file\n");
+       warn("# Cannot open <$file\n");
        return undef;
    }
    binmode IN; # make the test friendly for more platforms
    my $data = join '', <IN>;
    unless(close(IN)) {
-       warn( "Cannot close $file\n");
+       warn( "# Cannot close $file\n");
        return undef;
    }
    return $data unless( $data );
@@ -473,20 +518,20 @@ sub fout
 
    if($options_p->{append}) {
        unless(open OUT, ">>$file") {
-           warn("Cannot open >$file\n");
+           warn("# Cannot open >$file\n");
            return undef;
        }
    }
    else {
        unless(open OUT, ">$file") {
-           warn("Cannot open >$file\n");
+           warn("# Cannot open >$file\n");
            return undef;
        }
    }
    binmode OUT if $options_p->{binary};
    my $char_out = print OUT $data;
    unless(close(OUT)) {
-       warn( "Cannot close $file\n");
+       warn( "# Cannot close $file\n");
        return undef;
    }
    $char_out; 
@@ -763,14 +808,14 @@ sub is_driver
    foreach my $driver_test (@drivers) {
        if( $driver eq  substr(lc($driver_test), 0, $length)) {
            if( $driver_found ) {
-               warn "Ambiguous $driver\n";
+               warn "# Ambiguous $driver\n";
                return undef;
            }
            $driver_found = $driver_test;
        }
    }
    return $driver_found if $driver_found;
-   warn( "Cannot find driver module $driver.\n");
+   warn( "# Cannot find driver module $driver.\n");
    undef
 
 }
@@ -804,8 +849,8 @@ Test::TestUtil - functions that support Test::STDmaker
 
   $date          = Test::TestUtil->get_date( )
 
-  $table         = Test::TestUtil->format_hash_table(\%hash_p, \@width_p, \@header_p)
-  $table         = Test::TestUtil->format_array_table(\@array_p, \@width_p, \@header_p)
+  $table         = Test::TestUtil->format_hash_table(\%hash, \@width, \@header)
+  $table         = Test::TestUtil->format_array_table(\@array, \@width, \@header)
 
   $file          = Test::TestUtil->fspec2fspec($from_fspec, $to_fspec $fspec_file, [$nofile])
   $os_file       = Test::TestUtil->fspec2os($fspec, $file, [$no_file])
@@ -988,30 +1033,52 @@ For example,
 
 =head2 format_hash_table method
 
- $table = Test::TestUtil->format_hash_table(\%hash_p, \@width_p, \@header_p)
+ $table = Test::TestUtil->format_hash_table(\%hash, \@width, \@header)
 
 The I<format_hash_table> method provides a formatted table suitable for inclusion in
-a POD. The I<\%array> variable references a hash of array references.
-Each key is the first column of a row and the value for the key references
-a row array that contains the items in column order for the rest of the row.
+a POD. The I<\%array> variable references a hash of references to either arrays or hashes.
+Each key is the first column of a row.
+An array referenced by the hash value
+contains the items in column order for the rest of the row.
+The keys of a hash referenced by the hash value is
+the items for the next column in the row.
+Any other hash value signals the end of the row.
+The I<format_hash_table> method always sort hash keys.
+
 The I<\@width> variable references the width of each column in column order
 while the I<\@header> references the table column names in column order. 
 
 For example,
 
- => %hash_table
+ => %hash_array_table
 
  ('module.pm' => [qw(0.01 2003/5/6 new)],
  'bin/script.pl' => [qw(1.04 2003/5/5 generated)],
  'bin/script.pod' => [qw(3.01 2003/6/8), 'revised 2.03'])
 
- ==> Test::TestUtil->format_hash_table(\%hash_table, [15,7,10,15],[qw(file version date comment)])
+ ==> Test::TestUtil->format_hash_table(\%hash_array_table, [15,7,10,15],[qw(file version date comment)])
 
  file            version date       comment
  --------------- ------- ---------- ---------------
  bin/script.pl   1.04    2003/5/5   generated
  bin/script.pod  3.01    2003/6/8   revised 2.03
  module.pm       0.01    2003/5/6   new
+
+ ==> %hash_hash_table
+
+ ('L<test1>' => {'L<requirement4>' => undef, 'L<requirement1>' => undef },
+   'L<test2>' => {'L<requirement3>' => undef },
+   'L<test3>' => {'L<requirement2>' => undef, 'L<requirement1>' => undef },)
+
+ ==> Test::TestUtil->format_hash_table(\%hash_hash_table, [20,20],[qw(test requirement)])
+
+ test                 requirement
+ -------------------- --------------------
+ L<test1>             L<requirement1>
+ L<test1>             L<requirement4>
+ L<test2>             L<requirement3>
+ L<test3>             L<requirement1>
+ L<test3>             L<requirement2>
 
 =head2 fspec_glob method
 
@@ -1161,11 +1228,11 @@ For example, running under the Microsoft operating system:
  $fh = Test::TestUtil->pm2datah($pm_file)
 
 The I<pm2datah> method will open the I<$pm_file> and
-return a handle positioned at the first I<"\n__DATA__\n">
+return a handle positioned at the first I</[\012\015]__DATA__/>
 token occuring in the file.
 This function is very similar to the I<DATA> file handle
 that Perl creates when loading a module file with the
-I<__DATA__> token.
+I</[\012\015]__DATA__/> token.
 The differences is that I<pm2datah> works whether or
 not the file module is loaded. 
 The method does not close the file handle.
@@ -1173,6 +1240,13 @@ Unlike the I<DATA> file handle, which cannot be reused
 after the module data is read the first time,
 the I<pm2datah> will always return an opened file handle,
 the first time, the second time, any time.
+
+CAUTION: 
+
+If the I</[\012\015]__DATA__/> token appears
+in the code section, say in a comment, or as
+a value assigned to a variable,
+the I<pm2datah> method will misbehave.
 
 For example,
 
@@ -1578,10 +1652,6 @@ OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF NEGLIGENCE OR OTHERWISE) ARISING IN
 ANY WAY OUT OF THE POSSIBILITY OF SUCH DAMAGE. 
-
-=head1 SEE ALSO
-
-L<Test> L<Testgen/QUALITY> L<testgen_p> L<testgen_t>
 
 =for html
 <p><br>

@@ -10,18 +10,18 @@ use warnings;
 use warnings::register;
 
 use vars qw($VERSION $DATE $FILE );
-$VERSION = '0.02';
-$DATE = '2003/06/12';
+$VERSION = '0.03';
+$DATE = '2003/06/13';
 $FILE = __FILE__;
 
 use vars qw(%INVENTORY);
 %INVENTORY = (
-    'lib/Docs/Site_SVD/Test_TestUtil.pm' => [qw(0.02 2003/06/12), 'revised 0.01'],
-    'MANIFEST' => [qw(0.02 2003/06/12), 'generated, replaces 0.01'],
-    'Makefile.PL' => [qw(0.02 2003/06/12), 'generated, replaces 0.01'],
-    'README' => [qw(0.02 2003/06/12), 'generated, replaces 0.01'],
-    'lib/Test/TestUtil.pm' => [qw(1.04 2003/06/12), 'revised 1.03'],
-    't/Test/TestUtil/TestUtil.t' => [qw(0.01 2003/06/12), 'unchanged'],
+    'lib/Docs/Site_SVD/Test_TestUtil.pm' => [qw(0.03 2003/06/13), 'revised 0.02'],
+    'MANIFEST' => [qw(0.03 2003/06/13), 'generated, replaces 0.02'],
+    'Makefile.PL' => [qw(0.03 2003/06/13), 'generated, replaces 0.02'],
+    'README' => [qw(0.03 2003/06/13), 'generated, replaces 0.02'],
+    'lib/Test/TestUtil.pm' => [qw(1.05 2003/06/13), 'revised 1.04'],
+    't/Test/TestUtil/TestUtil.t' => [qw(0.02 2003/06/13), 'revised 0.01'],
     't/Test/TestUtil/Drivers/Driver.pm' => [qw(0.01 2003/06/12), 'unchanged'],
     't/Test/TestUtil/Drivers/Generate.pm' => [qw(0.01 2003/06/12), 'unchanged'],
     't/Test/TestUtil/Drivers/IO.pm' => [qw(0.01 2003/06/12), 'unchanged'],
@@ -51,11 +51,11 @@ use vars qw(%INVENTORY);
 
  Test::TestUtil - Utilites for Test::STDmaker and ExtUtils::SVDmaker
 
- Revision: A
+ Revision: B
 
- Version: 0.02
+ Version: 0.03
 
- Date: 2003/06/12
+ Date: 2003/06/13
 
  Prepared for: General Public 
 
@@ -107,11 +107,12 @@ US DOD STD2167A bundle is as follows:
         DataPort::FormDB
             Test::STDmaker ExtUtils::SVDmaker
 
-Test system should be as short and not depend on any other
+Test software should be short and not depend on any other
 modules. In other words, it should use just the basic
 core pure Perl and as little of the extension modules as possible.
 As such these utilities are a collection of very short
 methods, using core pure Perl and very few program modules
+(SelfLoader and use File::Spec) 
 of seemingly functionally unrelated methods.
 
 Some of the capabilities they provide are as follows:
@@ -145,7 +146,10 @@ that the program module vocabulary is present.
 
 =head2 1.3 Document overview.
 
-${DOCUMENT_OVERVIEW}
+This document releases Test::TestUtil version 0.03
+providing a description of the inventory, installation
+instructions and other information necessary to
+utilize and track this release.
 
 =head1 3.0 VERSION DESCRIPTION
 
@@ -160,8 +164,8 @@ system file specification.
 This document releases the file found
 at the following repository:
 
-   http://www.softwarediamonds/packages/Test-TestUtil-0.02
-   http://www.perl.com/CPAN-local/authors/id/S/SO/SOFTDIA/Test-TestUtil-0.02
+   http://www.softwarediamonds/packages/Test-TestUtil-0.03
+   http://www.perl.com/CPAN-local/authors/id/S/SO/SOFTDIA/Test-TestUtil-0.03
 
 
 =head2 3.1.2 Copyright.
@@ -173,15 +177,6 @@ copyright © 2003 Software Diamonds
  603 882-0846 E<lt>support@SoftwareDiamonds.comE<gt>
 
 =head2 3.1.4 License.
-
-These files are a POD derived works from the hard copy public domain version
-freely distributed by the United States Federal Government.
-
-The original hardcopy version is always the authoritative document
-and any conflict between the original hardcopy version governs whenever
-there is any conflict. In more explicit terms, any conflict is a 
-transcription error in converting the origninal hard-copy version to
-this POD format. Software Diamonds assumes no responsible for such errors.
 
 Software Diamonds permits the redistribution
 and use in source and binary forms, with or
@@ -231,12 +226,12 @@ consists of the following files:
 
  file                                                         version date       comment
  ------------------------------------------------------------ ------- ---------- ------------------------
- lib/Docs/Site_SVD/Test_TestUtil.pm                           0.02    2003/06/12 revised 0.01
- MANIFEST                                                     0.02    2003/06/12 generated, replaces 0.01
- Makefile.PL                                                  0.02    2003/06/12 generated, replaces 0.01
- README                                                       0.02    2003/06/12 generated, replaces 0.01
- lib/Test/TestUtil.pm                                         1.04    2003/06/12 revised 1.03
- t/Test/TestUtil/TestUtil.t                                   0.01    2003/06/12 unchanged
+ lib/Docs/Site_SVD/Test_TestUtil.pm                           0.03    2003/06/13 revised 0.02
+ MANIFEST                                                     0.03    2003/06/13 generated, replaces 0.02
+ Makefile.PL                                                  0.03    2003/06/13 generated, replaces 0.02
+ README                                                       0.03    2003/06/13 generated, replaces 0.02
+ lib/Test/TestUtil.pm                                         1.05    2003/06/13 revised 1.04
+ t/Test/TestUtil/TestUtil.t                                   0.02    2003/06/13 revised 0.01
  t/Test/TestUtil/Drivers/Driver.pm                            0.01    2003/06/12 unchanged
  t/Test/TestUtil/Drivers/Generate.pm                          0.01    2003/06/12 unchanged
  t/Test/TestUtil/Drivers/IO.pm                                0.01    2003/06/12 unchanged
@@ -247,31 +242,30 @@ consists of the following files:
 Correct failure from Josts Smokehouse" <Jost.Krieger+smokeback@ruhr-uni-bochum.de>
 test run
 
-t/Test/TestUtil/TestUtil....Bareword "fspec_dirs" not allowed 
-while "strict subs" in use at 
+PERL_DL_NONLAZY=1 /usr/local/perl/bin/perl "-MExtUtils::Command::MM" "-e" "test_harness(0, 'blib/lib', 'blib/arch')" t/Test/TestUtil/TestUtil.t
+t/Test/TestUtil/TestUtil....# Test 18 got: '$VAR1 = '';
+' (t/Test/TestUtil/TestUtil.t at line 540 fail #17)
+#    Expected: '$VAR1 = '\\=head1 Title Page
 
-  /net/sunu991/disc1/.cpanplus/5.8.0/build/Test-TestUtil-0.01/blib/lib/Test/TestUtil.pm line 56.
+The I<pm2datah> method is not returning any data for Test 18. This will also cause
+the test of I<pm2data>, test 19 to fail.
+The I<pm2datah> is searching for the string "\n__DATA__\n".
 
-Changed line 56 from
+The "\n" character on Perl is a logical end of line character sequence.
+The "\n" end of line is different on Mr. Smokehouse's Unix operating system
+than on my Windows NT operating system.
+The test file was created under MSWin32 and uses a MSWin32 "\n".
+Under UNIX, I<pm2datah> method will look for the Unix "\n"
+and there will not be any.
 
- my @dirs = (fspec_dirs) ? $from_package->splitdir( $fspec_dirs ) : ();
+Changed "\n__DATA__\n" to /[\012\015]__DATA__/. 
 
-to
-
- my @dirs = ($fspec_dirs) ? $from_package->splitdir( $fspec_dirs ) : ();
-
-This error is troublesome since the test passed on my system using Active Perl
-under Microsoft NT. It should never have passed. 
-This error is in a core method, I<fspec2fspec>,
-that changes file specifications from one operating system
-to another operating system.
-This method has been in service unchanged for some time.
-
-DOCUMENT_OVERVIEW:
-This document releases Test::TestUtil version 0.02
-providing a description of the inventory, installation
-instructions and other information necessary to
-utilize and track this release.
+During the clean-up for CPAN, broke the I<format_hash_table>
+method for tables in hash of hash format. 
+Fixed the break, added test 29 to the I<t/Test/TestUtil/TestUtil.t>
+test script for this
+feature, and added a discusssion of this feature in
+POD discription for I<format_hash_table>
 
 =head2 3.4 Adaptation data.
 
@@ -306,8 +300,8 @@ Follow the instructions for the the chosen installation software.
 
 The distribution file is at the following respositories:
 
-   http://www.softwarediamonds/packages/Test-TestUtil-0.02
-   http://www.perl.com/CPAN-local/authors/id/S/SO/SOFTDIA/Test-TestUtil-0.02
+   http://www.softwarediamonds/packages/Test-TestUtil-0.03
+   http://www.perl.com/CPAN-local/authors/id/S/SO/SOFTDIA/Test-TestUtil-0.03
 
 
 =head2 3.6.1 Installation support.
@@ -326,7 +320,15 @@ as part of the installation:
 
 =head2 3.7 Possible problems and known errors
 
-This is the foundation program module for testing
+The I<pm2datah> method determines the data section
+by searching for the token /[\012\015]__DATA__/.
+Currently the I<pm2datah> test only tests for
+"\n__DATA__" for the current operating system.
+The test should be for all operating systems,
+not just the current one.
+
+The Test::TestUtil program module is the foundation
+program module for testing
 and must be rock solid to ensure the quality of
 the Units that it will be testing.
 Testing of this module should be proactive and
@@ -426,17 +428,19 @@ Software Version Description
 
 __DATA__
 
+
+
 DISTNAME: Test-TestUtil^
-VERSION : 0.02^
+VERSION : 0.03^
 REPOSITORY_DIR: packages^
 FREEZE: 1^
 
 PREVIOUS_DISTNAME:  ^
-PREVIOUS_RELEASE: 0.01^
+PREVIOUS_RELEASE: 0.02^
 CHANGE2CURRENT:  ^
 AUTHOR  : SoftwareDiamonds.com E<lt>support@SoftwareDiamonds.comE<gt>^
 ABSTRACT: Low level utilities originally developed to support Test::STDmaker^
-REVISION: A^
+REVISION: B^
 TITLE   : Test::TestUtil - Utilites for Test::STDmaker and ExtUtils::SVDmaker^
 END_USER: General Public^
 COPYRIGHT: copyright © 2003 Software Diamonds^
@@ -472,25 +476,31 @@ CHANGES:
 Correct failure from Josts Smokehouse" <Jost.Krieger+smokeback@ruhr-uni-bochum.de>
 test run
 
-t/Test/TestUtil/TestUtil....Bareword "fspec_dirs" not allowed 
-while "strict subs" in use at 
+PERL_DL_NONLAZY=1 /usr/local/perl/bin/perl "-MExtUtils::Command::MM" "-e" "test_harness(0, 'blib/lib', 'blib/arch')" t/Test/TestUtil/TestUtil.t
+t/Test/TestUtil/TestUtil....# Test 18 got: '$VAR1 = '';
+' (t/Test/TestUtil/TestUtil.t at line 540 fail #17)
+#    Expected: '$VAR1 = '\\=head1 Title Page
 
-  /net/sunu991/disc1/.cpanplus/5.8.0/build/Test-TestUtil-0.01/blib/lib/Test/TestUtil.pm line 56.
+The I<pm2datah> method is not returning any data for Test 18. This will also cause
+the test of I<pm2data>, test 19 to fail.
+The I<pm2datah> is searching for the string "\n__DATA__\n".
 
-Changed line 56 from
+The "\n" character on Perl is a logical end of line character sequence.
+The "\n" end of line is different on Mr. Smokehouse's Unix operating system
+than on my Windows NT operating system.
+The test file was created under MSWin32 and uses a MSWin32 "\n".
+Under UNIX, I<pm2datah> method will look for the Unix "\n"
+and there will not be any.
 
- my @dirs = (fspec_dirs) ? $from_package->splitdir( $fspec_dirs ) : ();
+Changed "\n__DATA__\n" to /[\012\015]__DATA__/. 
 
-to
-
- my @dirs = ($fspec_dirs) ? $from_package->splitdir( $fspec_dirs ) : ();
-
-This error is troublesome since the test passed on my system using Active Perl
-under Microsoft NT. It should never have passed. 
-This error is in a core method, I<fspec2fspec>,
-that changes file specifications from one operating system
-to another operating system.
-This method has been in service unchanged for some time.
+During the clean-up for CPAN, broke the I<format_hash_table>
+method for tables in hash of hash format. 
+Fixed the break, added test 29 to the I<t/Test/TestUtil/TestUtil.t>
+test script for this
+feature, and added a discusssion of this feature in
+POD discription for I<format_hash_table>
+^
 
 DOCUMENT_OVERVIEW:
 This document releases ${NAME} version ${VERSION}
@@ -498,6 +508,7 @@ providing a description of the inventory, installation
 instructions and other information necessary to
 utilize and track this release.
 ^
+
 CAPABILITIES:
 This release adds low level utilites used initially in support
 of Test::STDmaker and ExtUtils::SVDmaker but may have uses in other modules.
@@ -510,11 +521,12 @@ US DOD STD2167A bundle is as follows:
         DataPort::FormDB
             Test::STDmaker ExtUtils::SVDmaker
 
-Test system should be as short and not depend on any other
+Test software should be short and not depend on any other
 modules. In other words, it should use just the basic
 core pure Perl and as little of the extension modules as possible.
 As such these utilities are a collection of very short
 methods, using core pure Perl and very few program modules
+(SelfLoader and use File::Spec) 
 of seemingly functionally unrelated methods.
 
 Some of the capabilities they provide are as follows:
@@ -548,7 +560,16 @@ that the program module vocabulary is present.
 ^
 
 PROBLEMS:
-This is the foundation program module for testing
+
+The I<pm2datah> method determines the data section
+by searching for the token /[\012\015]__DATA__/.
+Currently the I<pm2datah> test only tests for
+"\n__DATA__" for the current operating system.
+The test should be for all operating systems,
+not just the current one.
+
+The Test::TestUtil program module is the foundation
+program module for testing
 and must be rock solid to ensure the quality of
 the Units that it will be testing.
 Testing of this module should be proactive and
@@ -588,15 +609,6 @@ Test::TestUtil POD.
 ^
 
 LICENSE:
-These files are a POD derived works from the hard copy public domain version
-freely distributed by the United States Federal Government.
-
-The original hardcopy version is always the authoritative document
-and any conflict between the original hardcopy version governs whenever
-there is any conflict. In more explicit terms, any conflict is a 
-transcription error in converting the origninal hard-copy version to
-this POD format. Software Diamonds assumes no responsible for such errors.
-
 Software Diamonds permits the redistribution
 and use in source and binary forms, with or
 without modification, provided that the 

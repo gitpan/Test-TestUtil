@@ -7,8 +7,8 @@ use warnings;
 use warnings::register;
 
 use vars qw($VERSION $DATE);
-$VERSION = '0.01';
-$DATE = '2003/06/12';
+$VERSION = '0.02';
+$DATE = '2003/06/13';
 
 use Cwd;
 use File::Spec;
@@ -30,7 +30,7 @@ BEGIN {
    # Create the test plan by supplying the number of tests
    # and the todo tests
    #
-   $__tests__ = 28;
+   $__tests__ = 29;
    plan(tests => $__tests__);
 
    ########
@@ -496,7 +496,7 @@ EOF
 
 test([$T->format_hash_table(\%hash_table, [15,7,10,15],[qw(file version date comment)])],
      [$expected_table],
-     'format_hash_table' );
+     'format_hash_table - hash of array' );
 
 
 
@@ -517,6 +517,31 @@ test( [$T->find_in_path('Unix', 'Test/TestUtil/TestUtil.t')],
       [$expected_file, $expected_dir],
       'find_in_path' );
 
+####
+#
+# ok: 29
+#
+# R:
+#
+%hash_table =  (
+   'L<test1>' => {'L<requirement4>' => undef, 'L<requirement1>' => undef },
+   'L<test2>' => {'L<requirement3>' => undef },
+   'L<test3>' => {'L<requirement2>' => undef, 'L<requirement1>' => undef },
+);
+
+$expected_table = << 'EOF';
+ test                 requirement
+ -------------------- --------------------
+ L<test1>             L<requirement1>
+ L<test1>             L<requirement4>
+ L<test2>             L<requirement3>
+ L<test3>             L<requirement1>
+ L<test3>             L<requirement2>
+EOF
+
+test([$T->format_hash_table(\%hash_table, [20,20],[qw(test requirement)])],
+     [$expected_table],
+     'format_hash_table - hash of hash' );
 
 #######
 # Delete actual results files
