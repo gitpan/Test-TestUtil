@@ -10,21 +10,21 @@ use warnings;
 use warnings::register;
 
 use vars qw($VERSION $DATE $FILE );
-$VERSION = '0.01';
+$VERSION = '0.02';
 $DATE = '2003/06/12';
 $FILE = __FILE__;
 
 use vars qw(%INVENTORY);
 %INVENTORY = (
-    'lib/Docs/Site_SVD/Test_TestUtil.pm' => [qw(0.01 2003/06/12), 'new'],
-    'MANIFEST' => [qw(0.01 2003/06/12), 'generated new'],
-    'Makefile.PL' => [qw(0.01 2003/06/12), 'generated new'],
-    'README' => [qw(0.01 2003/06/12), 'generated new'],
-    'lib/Test/TestUtil.pm' => [qw(1.03 2003/06/12), 'new'],
-    't/Test/TestUtil/TestUtil.t' => [qw(0.01 2003/06/12), 'new'],
-    't/Test/TestUtil/Drivers/Driver.pm' => [qw(0.01 2003/06/12), 'new'],
-    't/Test/TestUtil/Drivers/Generate.pm' => [qw(0.01 2003/06/12), 'new'],
-    't/Test/TestUtil/Drivers/IO.pm' => [qw(0.01 2003/06/12), 'new'],
+    'lib/Docs/Site_SVD/Test_TestUtil.pm' => [qw(0.02 2003/06/12), 'revised 0.01'],
+    'MANIFEST' => [qw(0.02 2003/06/12), 'generated, replaces 0.01'],
+    'Makefile.PL' => [qw(0.02 2003/06/12), 'generated, replaces 0.01'],
+    'README' => [qw(0.02 2003/06/12), 'generated, replaces 0.01'],
+    'lib/Test/TestUtil.pm' => [qw(1.04 2003/06/12), 'revised 1.03'],
+    't/Test/TestUtil/TestUtil.t' => [qw(0.01 2003/06/12), 'unchanged'],
+    't/Test/TestUtil/Drivers/Driver.pm' => [qw(0.01 2003/06/12), 'unchanged'],
+    't/Test/TestUtil/Drivers/Generate.pm' => [qw(0.01 2003/06/12), 'unchanged'],
+    't/Test/TestUtil/Drivers/IO.pm' => [qw(0.01 2003/06/12), 'unchanged'],
 
 );
 
@@ -49,11 +49,11 @@ use vars qw(%INVENTORY);
 
  for
 
- Software Tests and Software Test Description (STD) Utilities
+ Test::TestUtil - Utilites for Test::STDmaker and ExtUtils::SVDmaker
 
  Revision: A
 
- Version: 0.01
+ Version: 0.02
 
  Date: 2003/06/12
 
@@ -97,14 +97,55 @@ Plain Old Documentation (POD) that may be embedded in the language
 These features are established by the referenced documents.
 
 This release adds low level utilites used initially in support
-of Test::STDmaker but have uses in other modules.
+of Test::STDmaker and ExtUtils::SVDmaker but may have uses in other modules.
+
+The dependency of the program modules in the Test::STDmaker ExtUtils::SVDmaker
+US DOD STD2167A bundle is as follows:
+
+ Test::TestUtil
+     Test::Tester
+        DataPort::FormDB
+            Test::STDmaker ExtUtils::SVDmaker
+
+Test system should be as short and not depend on any other
+modules. In other words, it should use just the basic
+core pure Perl and as little of the extension modules as possible.
+As such these utilities are a collection of very short
+methods, using core pure Perl and very few program modules
+of seemingly functionally unrelated methods.
+
+Some of the capabilities they provide are as follows:
+
+=over 4
+
+=item *
+
+Methods to change file specifications from
+one operating system to another.
+
+=item *
+
+Methods that address the issue of different
+new line sequences for different operating systems
+
+=item *
+
+Formatting raw array tables for inclusion in PODS
+
+=item *
+
+Picking up data from program modules
+
+=item *
+
+Loading program modules using an I<eval> and testing
+that the program module vocabulary is present.
+
+=back
 
 =head2 1.3 Document overview.
 
-This document releases Test::TestUtil version 0.01
-providing description of the inventory, installation
-instructions and other information necessary to
-utilize and track this release.
+${DOCUMENT_OVERVIEW}
 
 =head1 3.0 VERSION DESCRIPTION
 
@@ -119,7 +160,8 @@ system file specification.
 This document releases the file found
 at the following repository:
 
- http://www.softwarediamonds/packagesTest-TestUtil-0.01
+   http://www.softwarediamonds/packages/Test-TestUtil-0.02
+   http://www.perl.com/CPAN-local/authors/id/S/SO/SOFTDIA/Test-TestUtil-0.02
 
 
 =head2 3.1.2 Copyright.
@@ -189,20 +231,47 @@ consists of the following files:
 
  file                                                         version date       comment
  ------------------------------------------------------------ ------- ---------- ------------------------
- lib/Docs/Site_SVD/Test_TestUtil.pm                           0.01    2003/06/12 new
- MANIFEST                                                     0.01    2003/06/12 generated new
- Makefile.PL                                                  0.01    2003/06/12 generated new
- README                                                       0.01    2003/06/12 generated new
- lib/Test/TestUtil.pm                                         1.03    2003/06/12 new
- t/Test/TestUtil/TestUtil.t                                   0.01    2003/06/12 new
- t/Test/TestUtil/Drivers/Driver.pm                            0.01    2003/06/12 new
- t/Test/TestUtil/Drivers/Generate.pm                          0.01    2003/06/12 new
- t/Test/TestUtil/Drivers/IO.pm                                0.01    2003/06/12 new
+ lib/Docs/Site_SVD/Test_TestUtil.pm                           0.02    2003/06/12 revised 0.01
+ MANIFEST                                                     0.02    2003/06/12 generated, replaces 0.01
+ Makefile.PL                                                  0.02    2003/06/12 generated, replaces 0.01
+ README                                                       0.02    2003/06/12 generated, replaces 0.01
+ lib/Test/TestUtil.pm                                         1.04    2003/06/12 revised 1.03
+ t/Test/TestUtil/TestUtil.t                                   0.01    2003/06/12 unchanged
+ t/Test/TestUtil/Drivers/Driver.pm                            0.01    2003/06/12 unchanged
+ t/Test/TestUtil/Drivers/Generate.pm                          0.01    2003/06/12 unchanged
+ t/Test/TestUtil/Drivers/IO.pm                                0.01    2003/06/12 unchanged
 
 
 =head2 3.3 Changes
 
-This is the original release. There are no previous releases to change.
+Correct failure from Josts Smokehouse" <Jost.Krieger+smokeback@ruhr-uni-bochum.de>
+test run
+
+t/Test/TestUtil/TestUtil....Bareword "fspec_dirs" not allowed 
+while "strict subs" in use at 
+
+  /net/sunu991/disc1/.cpanplus/5.8.0/build/Test-TestUtil-0.01/blib/lib/Test/TestUtil.pm line 56.
+
+Changed line 56 from
+
+ my @dirs = (fspec_dirs) ? $from_package->splitdir( $fspec_dirs ) : ();
+
+to
+
+ my @dirs = ($fspec_dirs) ? $from_package->splitdir( $fspec_dirs ) : ();
+
+This error is troublesome since the test passed on my system using Active Perl
+under Microsoft NT. It should never have passed. 
+This error is in a core method, I<fspec2fspec>,
+that changes file specifications from one operating system
+to another operating system.
+This method has been in service unchanged for some time.
+
+DOCUMENT_OVERVIEW:
+This document releases Test::TestUtil version 0.02
+providing a description of the inventory, installation
+instructions and other information necessary to
+utilize and track this release.
 
 =head2 3.4 Adaptation data.
 
@@ -237,7 +306,8 @@ Follow the instructions for the the chosen installation software.
 
 The distribution file is at the following respositories:
 
- http://www.softwarediamonds/packagesTest-TestUtil-0.01
+   http://www.softwarediamonds/packages/Test-TestUtil-0.02
+   http://www.perl.com/CPAN-local/authors/id/S/SO/SOFTDIA/Test-TestUtil-0.02
 
 
 =head2 3.6.1 Installation support.
@@ -256,7 +326,42 @@ as part of the installation:
 
 =head2 3.7 Possible problems and known errors
 
-There are no open issures.
+This is the foundation program module for testing
+and must be rock solid to ensure the quality of
+the Units that it will be testing.
+Testing of this module should be proactive and
+not dumped upon the end-user.
+
+There is still much work needed to ensure the quality 
+of this module as follows:
+
+=over 4
+
+=item *
+
+State the functional requirements for each method 
+including not only the GO paths but also what to
+expect for the NOGO paths
+
+=item *
+
+All the tests are GO path tests. Should add
+NOGO tests.
+
+=item *
+
+Add the requirements addressed as I<# R: >
+comment to the tests
+
+=item *
+
+Write a program to build a matrix to trace
+test step to the requirements and vice versa by
+parsing the I<# R: > comments.
+Automatically insert the matrix in the
+Test::TestUtil POD.
+
+=back
 
 =head1 4.0 NOTES
 
@@ -296,7 +401,8 @@ Software Version Description
 
 =head1 2.0 SEE ALSO
 
-
+ L<US DOD SVD|Docs::US_DOD::SVD>
+ L<Test::TestUtil|Test::TestUtil>
 
 =for html
 <hr>
@@ -321,24 +427,28 @@ Software Version Description
 __DATA__
 
 DISTNAME: Test-TestUtil^
-VERSION : 0.01^
+VERSION : 0.02^
 REPOSITORY_DIR: packages^
 FREEZE: 1^
 
 PREVIOUS_DISTNAME:  ^
-PREVIOUS_RELEASE:  ^
+PREVIOUS_RELEASE: 0.01^
 CHANGE2CURRENT:  ^
 AUTHOR  : SoftwareDiamonds.com E<lt>support@SoftwareDiamonds.comE<gt>^
 ABSTRACT: Low level utilities originally developed to support Test::STDmaker^
 REVISION: A^
-TITLE   : Software Tests and Software Test Description (STD) Utilities^
+TITLE   : Test::TestUtil - Utilites for Test::STDmaker and ExtUtils::SVDmaker^
 END_USER: General Public^
 COPYRIGHT: copyright © 2003 Software Diamonds^
 CLASSIFICATION: NONE^
-REPOSITORY: http://www.softwarediamonds/packages^
 TEMPLATE:  ^
 CSS: help.css^
 SVD_FSPEC: Unix^
+
+REPOSITORY: 
+  http://www.softwarediamonds/packages/
+  http://www.perl.com/CPAN-local/authors/id/S/SO/SOFTDIA/
+^
 
 COMPRESS: gzip^
 COMPRESS_SUFFIX: gz^
@@ -357,17 +467,124 @@ TESTS: t/Test/TestUtil/TestUtil.t^
 
 EXE_FILES:  ^
 
-CHANGES: This is the original release. There are no previous releases to change.^
+CHANGES:
+
+Correct failure from Josts Smokehouse" <Jost.Krieger+smokeback@ruhr-uni-bochum.de>
+test run
+
+t/Test/TestUtil/TestUtil....Bareword "fspec_dirs" not allowed 
+while "strict subs" in use at 
+
+  /net/sunu991/disc1/.cpanplus/5.8.0/build/Test-TestUtil-0.01/blib/lib/Test/TestUtil.pm line 56.
+
+Changed line 56 from
+
+ my @dirs = (fspec_dirs) ? $from_package->splitdir( $fspec_dirs ) : ();
+
+to
+
+ my @dirs = ($fspec_dirs) ? $from_package->splitdir( $fspec_dirs ) : ();
+
+This error is troublesome since the test passed on my system using Active Perl
+under Microsoft NT. It should never have passed. 
+This error is in a core method, I<fspec2fspec>,
+that changes file specifications from one operating system
+to another operating system.
+This method has been in service unchanged for some time.
 
 DOCUMENT_OVERVIEW:
 This document releases ${NAME} version ${VERSION}
-providing description of the inventory, installation
+providing a description of the inventory, installation
 instructions and other information necessary to
 utilize and track this release.
 ^
 CAPABILITIES:
 This release adds low level utilites used initially in support
-of Test::STDmaker but have uses in other modules.
+of Test::STDmaker and ExtUtils::SVDmaker but may have uses in other modules.
+
+The dependency of the program modules in the Test::STDmaker ExtUtils::SVDmaker
+US DOD STD2167A bundle is as follows:
+
+ Test::TestUtil
+     Test::Tester
+        DataPort::FormDB
+            Test::STDmaker ExtUtils::SVDmaker
+
+Test system should be as short and not depend on any other
+modules. In other words, it should use just the basic
+core pure Perl and as little of the extension modules as possible.
+As such these utilities are a collection of very short
+methods, using core pure Perl and very few program modules
+of seemingly functionally unrelated methods.
+
+Some of the capabilities they provide are as follows:
+
+\=over 4
+
+\=item *
+
+Methods to change file specifications from
+one operating system to another.
+
+\=item *
+
+Methods that address the issue of different
+new line sequences for different operating systems
+
+\=item *
+
+Formatting raw array tables for inclusion in PODS
+
+\=item *
+
+Picking up data from program modules
+
+\=item *
+
+Loading program modules using an I<eval> and testing
+that the program module vocabulary is present.
+
+\=back
+^
+
+PROBLEMS:
+This is the foundation program module for testing
+and must be rock solid to ensure the quality of
+the Units that it will be testing.
+Testing of this module should be proactive and
+not dumped upon the end-user.
+
+There is still much work needed to ensure the quality 
+of this module as follows:
+
+\=over 4
+
+\=item *
+
+State the functional requirements for each method 
+including not only the GO paths but also what to
+expect for the NOGO paths
+
+\=item *
+
+All the tests are GO path tests. Should add
+NOGO tests.
+
+\=item *
+
+Add the requirements addressed as I<# R: >
+comment to the tests
+
+\=item *
+
+Write a program to build a matrix to trace
+test step to the requirements and vice versa by
+parsing the I<# R: > comments.
+Automatically insert the matrix in the
+Test::TestUtil POD.
+
+\=back
+
 ^
 
 LICENSE:
@@ -436,9 +653,6 @@ The distribution file is at the following respositories:
 ${REPOSITORY}
 ^
 
-
-PROBLEMS: There are no open issures.^
-
 SUPPORT: 603 882-0846 E<lt>support@SoftwareDiamonds.comE<gt>^
 
 NOTES:
@@ -477,7 +691,10 @@ Software Version Description
 \=back
 ^
 
-SEE_ALSO:  ^
+SEE_ALSO:
+ L<US DOD SVD|Docs::US_DOD::SVD>
+ L<Test::TestUtil|Test::TestUtil>
+^
 
 HTML:
 <hr>

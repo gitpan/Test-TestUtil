@@ -11,7 +11,7 @@ use warnings::register;
 
 
 use vars qw($VERSION $DATE);
-$VERSION = '1.03';
+$VERSION = '1.04';
 $DATE = '2003/06/12';
 
 use SelfLoader;
@@ -53,7 +53,7 @@ sub fspec2fspec
     my $from_package = "File::Spec::$from_module";
     Test::TestUtil->load_package( $from_package);
     my (undef, $fspec_dirs, $file) = $from_package->splitpath( $fspec_file, $nofile); 
-    my @dirs = (fspec_dirs) ? $from_package->splitdir( $fspec_dirs ) : ();
+    my @dirs = ($fspec_dirs) ? $from_package->splitdir( $fspec_dirs ) : ();
 
     return $file unless @dirs;  # no directories, file spec same for all os
 
