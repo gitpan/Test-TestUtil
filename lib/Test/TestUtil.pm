@@ -11,8 +11,8 @@ use warnings::register;
 
 
 use vars qw($VERSION $DATE);
-$VERSION = '1.05';
-$DATE = '2003/06/13';
+$VERSION = '1.06';
+$DATE = '2003/06/14';
 
 use SelfLoader;
 use File::Spec;
@@ -104,6 +104,7 @@ sub pm2datah
         warn "# Cannot open $file\n";
         return undef;
     }    
+    binmode $fh;
 
     ######
     # Move to the __DATA__ token
@@ -116,6 +117,75 @@ sub pm2datah
 
     $fh
 }
+
+######
+#
+#
+sub pm2data
+{
+    my (undef, $pm) = @_;
+    my $fh = Test::TestUtil->pm2datah( $pm );
+    my $data = Test::TestUtil->fin($fh);
+    close $fh;
+    $data;
+}
+
+####
+# slurp in a text file in a platform independent manner
+#
+sub fin
+{
+   my (undef, $file, $options_p) = @_;
+
+
+   ######
+   # If have a file name, open the file, otherwise
+   # the file is opened and the file name is a 
+   # file handle.
+   #
+   my $fh;
+   if( ref($file) eq 'GLOB' ) {
+       $fh = $file;
+   }
+   else {
+       my $fspec = $options_p->{fspec};
+       $fspec = 'Unix' unless $fspec;
+       $file = Test::TestUtil->fspec2os($fspec, $file );   
+       unless(open $fh, "<$file") {
+           warn("# Cannot open <$file\n");
+           return undef;
+       }
+   } 
+
+   #####
+   # slurp in the file contents with no operating system
+   # translations
+   #
+   binmode $fh; # make the test friendly for more platforms
+   my $data = join '', <$fh>;
+
+   #####
+   # Close the file
+   #
+   unless(close($fh)) {
+       warn( "# Cannot close $file\n");
+       return undef;
+   }
+   return $data unless( $data );
+
+   #########
+   # No matter what platform generated the data, convert
+   # all platform dependent new lines to the new line for
+   # the current platform.
+   #
+   unless($options_p->{binary}) {
+       $data =~ s/\015\012|\012\015/\012/g;  # replace LFCR or CRLF with a LF
+       $data =~ s/\012|\015/\n/g;   # replace CR or LF with logical \n 
+   }
+   $data          
+
+}
+
 
 __DATA__
 
@@ -370,17 +440,6 @@ sub test_lib2inc
 
 
 
-######
-#
-#
-sub pm2data
-{
-    my (undef, $pm) = @_;
-    my $fh = Test::TestUtil->pm2datah( $pm );
-    my $data = join '', <$fh>;
-    close $fh;
-    $data;
-}
 
 
 ######
@@ -466,44 +525,6 @@ sub fspec2pm
 }
 
 
-####
-# slurp in a text file in a platform independent manner
-#
-sub fin
-{
-   my (undef, $file, , $options_p) = @_;
-
-   my $fspec = $options_p->{fspec};
-   $fspec = 'Unix' unless $fspec;
-   $file = Test::TestUtil->fspec2os($fspec, $file );   
-
-   #####
-   # slurp in the file contents with no operating system
-   # translations
-   #
-   unless(open IN, "<$file") {
-       warn("# Cannot open <$file\n");
-       return undef;
-   }
-   binmode IN; # make the test friendly for more platforms
-   my $data = join '', <IN>;
-   unless(close(IN)) {
-       warn( "# Cannot close $file\n");
-       return undef;
-   }
-   return $data unless( $data );
-
-   #########
-   # No matter what platform generated the data, convert
-   # all platform dependent new lines to the new line for
-   # the current platform.
-   #
-   unless($options_p->{binary}) {
-       $data =~ s/\015\012|\012\015/\012/g;  # replace LFCR or CRLF with a LF
-       $data =~ s/\012|\015/\n/g;   # replace CR or LF with logical \n 
-   }
-   $data          
-}
 
 ###
 # slurp a file out, current platform text format

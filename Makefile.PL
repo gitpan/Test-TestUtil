@@ -29,7 +29,7 @@ else {
 WriteMakefile(
     NAME => 'Test::TestUtil',
     DISTNAME => 'Test-TestUtil',
-    VERSION  => '0.03',
+    VERSION  => '0.04',
     dist     => {COMPRESS => 'gzip',
                 'gz' => 'gz'},
     test     => {TESTS => $tests},

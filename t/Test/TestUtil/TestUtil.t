@@ -7,8 +7,8 @@ use warnings;
 use warnings::register;
 
 use vars qw($VERSION $DATE);
-$VERSION = '0.02';
-$DATE = '2003/06/13';
+$VERSION = '0.03';
+$DATE = '2003/06/14';
 
 use Cwd;
 use File::Spec;
@@ -327,7 +327,7 @@ test( [$date =~ m=2\d\d\d/\d\d/\d\d=], ['1'], 'get_date' );
 # R:
 #
 my $fh = $T->pm2datah('Test::TestUtil::Drivers::Driver');
-my $actual_datah = join '',<$fh>;
+my $actual_datah = $T->fin($fh);
 $actual_datah =~ s/^\s*(.*)\s*$/$1/gs;
 
 my $expected_datah = << 'EOF';
